@@ -34,11 +34,12 @@ func (h *EventHandler) registerRouters(r chi.Router) {
 }
 
 func (h *EventHandler) create(w http.ResponseWriter, r *http.Request) {
-	userID, err := getUserSession(w, r)
-	if err != nil {
+	userID, ok := getUserID(r.Context())
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		render.JSON(w, r, nil)
 		return
 	}
-
 	req := &dto.CreateEventRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {

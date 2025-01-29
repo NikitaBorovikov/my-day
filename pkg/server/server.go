@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"toDoApp/pkg/config"
 
 	"github.com/go-chi/chi/v5"
@@ -55,4 +56,9 @@ func initRouters(h *Handlers) *chi.Mux {
 func initSession(key string) {
 	sessionKey = key
 	sessionStore = sessions.NewCookieStore([]byte(key))
+}
+
+func getUserID(ctx context.Context) (int64, bool) {
+	userID, ok := ctx.Value(UserIDKey).(int64)
+	return userID, ok
 }

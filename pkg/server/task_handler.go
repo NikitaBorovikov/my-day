@@ -36,8 +36,10 @@ func (h *TaskHandler) registerRouters(r chi.Router) {
 
 func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
 
-	userID, err := getUserSession(w, r)
-	if err != nil {
+	userID, ok := getUserID(r.Context())
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		render.JSON(w, r, nil)
 		return
 	}
 	req := &dto.CreateTaskRequest{}
@@ -68,8 +70,10 @@ func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
 
 func (h *TaskHandler) getAll(w http.ResponseWriter, r *http.Request) {
 
-	userID, err := getUserSession(w, r)
-	if err != nil {
+	userID, ok := getUserID(r.Context())
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		render.JSON(w, r, nil)
 		return
 	}
 
@@ -123,17 +127,6 @@ func (h *TaskHandler) delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-}
-
-func getUserSession(w http.ResponseWriter, r *http.Request) (int64, error) {
-	session, err := sessionStore.Get(r, sessionKey)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
-		return 0, err
-	}
-	userID := session.Values["user_id"].(int64)
-	return userID, nil
 }
 
 func getIDFromURL(r *http.Request) (int64, error) {

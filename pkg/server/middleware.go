@@ -1,12 +1,17 @@
 package server
 
 import (
+	"context"
 	"net/http"
 	"toDoApp/pkg/dto"
 
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 )
+
+type contextKey string
+
+const UserIDKey contextKey = "userID"
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +29,9 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		userID := session.Values["user_id"].(int64)
+		ctx := context.WithValue(r.Context(), UserIDKey, userID)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
