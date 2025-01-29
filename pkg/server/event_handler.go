@@ -66,7 +66,22 @@ func (h *EventHandler) create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *EventHandler) getAll(w http.ResponseWriter, r *http.Request) {
+	userID, ok := getUserID(r.Context())
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		render.JSON(w, r, nil)
+		return
+	}
 
+	events, err := h.EventUseCase.GetAll(userID)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	render.JSON(w, r, dto.NewResponse(events))
 }
 
 func (h *EventHandler) getByID(w http.ResponseWriter, r *http.Request) {
