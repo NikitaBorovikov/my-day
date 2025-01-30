@@ -90,7 +90,7 @@ func (h *TaskHandler) getAll(w http.ResponseWriter, r *http.Request) {
 
 func (h *TaskHandler) getByID(w http.ResponseWriter, r *http.Request) {
 	//TO THINK: mayby I should to pass in argument userID
-	taskID, err := getIDFromURL(r)
+	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		render.JSON(w, r, dto.NewResponse(err.Error()))
@@ -113,7 +113,7 @@ func (h *TaskHandler) update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TaskHandler) delete(w http.ResponseWriter, r *http.Request) {
-	taskID, err := getIDFromURL(r)
+	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		render.JSON(w, r, dto.NewResponse(err.Error()))
@@ -129,7 +129,7 @@ func (h *TaskHandler) delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func getIDFromURL(r *http.Request) (int64, error) {
+func getTaskIDFromURL(r *http.Request) (int64, error) {
 	taskID := chi.URLParam(r, "taskID")
 	taskIDInt, err := strconv.Atoi(taskID)
 	if err != nil {
