@@ -37,15 +37,13 @@ func (h *EventHandler) registerRouters(r chi.Router) {
 func (h *EventHandler) create(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
 	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		render.JSON(w, r, nil)
+		sendResponseWithError(w, r, http.StatusUnauthorized, nil)
 		return
 	}
 	req := &dto.CreateEventRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -57,66 +55,56 @@ func (h *EventHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.EventUseCase.Create(event); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(event))
+	sendOKResponse(w, r, event)
 }
 
 func (h *EventHandler) getAll(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
 	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		render.JSON(w, r, nil)
+		sendResponseWithError(w, r, http.StatusUnauthorized, nil)
 		return
 	}
 
 	events, err := h.EventUseCase.GetAll(userID)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(events))
+	sendOKResponse(w, r, events)
 }
 
 func (h *EventHandler) getByID(w http.ResponseWriter, r *http.Request) {
 	eventID, err := getEventIDFromURL(r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	event, err := h.EventUseCase.GetByID(eventID)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(event))
+	sendOKResponse(w, r, event)
 }
 
 func (h *EventHandler) update(w http.ResponseWriter, r *http.Request) {
 	eventID, err := getEventIDFromURL(r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	req := &dto.UpdateEventRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -128,30 +116,25 @@ func (h *EventHandler) update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.EventUseCase.Update(event); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(event))
+	sendOKResponse(w, r, event)
 }
 
 func (h *EventHandler) delete(w http.ResponseWriter, r *http.Request) {
 	eventID, err := getEventIDFromURL(r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 	if err := h.EventUseCase.Delete(eventID); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, nil)
+	sendOKResponse(w, r, nil)
 }
 
 func getEventIDFromURL(r *http.Request) (int64, error) {

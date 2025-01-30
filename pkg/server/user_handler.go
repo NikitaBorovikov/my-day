@@ -24,8 +24,7 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	req := &dto.SignUpRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		dto.NewResponse(err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -36,12 +35,10 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.UserUseCase.SignUp(user); err != nil {
-		w.WriteHeader(http.StatusConflict)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(user))
+	sendOKResponse(w, r, user)
 }
 
 func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
@@ -49,46 +46,40 @@ func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 	req := &dto.SignInRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	user, err := h.UserUseCase.SignIn(req.Email, req.Password)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusUnauthorized, nil)
 		return
 	}
 
 	if err := setUserSession(w, r, user); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(user.ID))
+	sendOKResponse(w, r, user.ID)
 
 }
 
 func logOut(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, sessionKey)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	cleanSessionInfo(session)
 
 	if err := session.Save(r, w); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	sendOKResponse(w, r, nil)
 }
 
 func cleanSessionInfo(session *sessions.Session) {
@@ -106,7 +97,7 @@ func setUserSession(w http.ResponseWriter, r *http.Request, user *model.User) er
 	session.Values["user_id"] = user.ID
 
 	session.Options = &sessions.Options{
-		MaxAge:   3600, //seconds
+		MaxAge:   3600 * 12, //seconds
 		HttpOnly: true,
 	}
 

@@ -3,10 +3,8 @@ package server
 import (
 	"context"
 	"net/http"
-	"toDoApp/pkg/dto"
 
 	"github.com/go-chi/cors"
-	"github.com/go-chi/render"
 )
 
 type contextKey string
@@ -17,15 +15,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		session, err := sessionStore.Get(r, sessionKey)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			render.JSON(w, r, dto.NewResponse(err.Error()))
+			sendResponseWithError(w, r, http.StatusInternalServerError, err.Error())
 			return
 		}
 
 		auth, ok := session.Values["authenticated"].(bool)
 		if !ok || !auth {
-			w.WriteHeader(http.StatusForbidden)
-			render.JSON(w, r, nil)
+			sendResponseWithError(w, r, http.StatusForbidden, nil)
 			return
 		}
 
