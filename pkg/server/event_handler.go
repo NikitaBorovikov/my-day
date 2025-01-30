@@ -105,7 +105,36 @@ func (h *EventHandler) getByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *EventHandler) update(w http.ResponseWriter, r *http.Request) {
+	eventID, err := getEventIDFromURL(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, dto.NewResponse(err.Error()))
+		return
+	}
 
+	req := &dto.UpdateEventRequest{}
+
+	if err := render.DecodeJSON(r.Body, req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, dto.NewResponse(err.Error()))
+		return
+	}
+
+	event := &model.Event{
+		ID:            eventID,
+		Name:          req.Name,
+		Description:   req.Description,
+		AppointedDate: req.AppointedDate,
+	}
+
+	if err := h.EventUseCase.Update(event); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, dto.NewResponse(err.Error()))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	render.JSON(w, r, dto.NewResponse(event))
 }
 
 func (h *EventHandler) delete(w http.ResponseWriter, r *http.Request) {

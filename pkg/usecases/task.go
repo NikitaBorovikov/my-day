@@ -52,7 +52,17 @@ func (uc *TaskUseCase) GetByID(taskID int64) (*model.Task, error) {
 }
 
 func (uc *TaskUseCase) Update(t *model.Task) error {
-	return nil
+	if err := validateForTask(t); err != nil {
+		return err
+	}
+
+	if err := setDateFormatForTask(t); err != nil {
+		return err
+	}
+
+	err := uc.TaskRepository.Update(t)
+	return err
+
 }
 
 func (uc *TaskUseCase) Delete(taskID int64) error {

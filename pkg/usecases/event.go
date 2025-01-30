@@ -44,13 +44,21 @@ func (uc *EventUseCase) GetAll(userID int64) ([]model.Event, error) {
 
 func (uc *EventUseCase) GetByID(eventID int64) (*model.Event, error) {
 	event, err := uc.EventRepository.GetByID(eventID)
-	if err != nil {
-		return nil, err
-	}
-	return event, nil
+	return event, err
 }
 
 func (uc *EventUseCase) Update(e *model.Event) error {
+	if err := validateForEvent(e); err != nil {
+		return err
+	}
+
+	if err := setDateFormatForEvent(e); err != nil {
+		return err
+	}
+
+	if err := uc.EventRepository.Update(e); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -62,12 +70,8 @@ func (uc *EventUseCase) Delete(eventID int64) error {
 
 func validateForEvent(e *model.Event) error {
 	validate := validator.New()
-
-	if err := validate.Struct(e); err != nil {
-		return err
-	}
-
-	return nil
+	err := validate.Struct(e)
+	return err
 }
 
 func setDateFormatForEvent(e *model.Event) error {

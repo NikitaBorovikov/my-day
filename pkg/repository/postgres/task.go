@@ -54,7 +54,10 @@ func (r *TaskRepository) GetByID(taskID int64) (*model.Task, error) {
 }
 
 func (r *TaskRepository) Update(t *model.Task) error {
-	return nil
+	_, err := r.db.Exec("UPDATE task SET title = $1, description = $2, is_important = $3, due_date = $4, is_done = $5 WHERE id = $6",
+		t.Title, t.Description, t.IsImportant, t.DueDate, t.IsDone, &t.ID)
+
+	return err
 }
 
 func (r *TaskRepository) Delete(taskID int64) error {

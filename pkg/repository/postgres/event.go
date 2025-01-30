@@ -52,7 +52,9 @@ func (r *EventRepository) GetByID(eventID int64) (*model.Event, error) {
 }
 
 func (r *EventRepository) Update(e *model.Event) error {
-	return nil
+	_, err := r.db.Exec("UPDATE events SET name = $1, description = $2, appointed_date = $3 WHERE id = $4",
+		e.Name, e.Description, e.AppointedDate, e.ID)
+	return err
 }
 
 func (r *EventRepository) Delete(eventID int64) error {

@@ -108,8 +108,40 @@ func (h *TaskHandler) getByID(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, dto.NewResponse(task))
 }
 
+// TODO: divide into several parts
 func (h *TaskHandler) update(w http.ResponseWriter, r *http.Request) {
+	taskID, err := getTaskIDFromURL(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, dto.NewResponse(err.Error()))
+		return
+	}
 
+	req := &dto.UpdateTaskRequest{}
+
+	if err := render.DecodeJSON(r.Body, req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, dto.NewResponse(err.Error()))
+		return
+	}
+
+	task := &model.Task{
+		ID:          taskID,
+		Title:       req.Title,
+		Description: req.Description,
+		IsImportant: req.IsImportant,
+		IsDone:      req.IsDone,
+		DueDate:     req.DueDate,
+	}
+
+	if err := h.TaskUseCase.Update(task); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		render.JSON(w, r, dto.NewResponse(err.Error()))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	render.JSON(w, r, dto.NewResponse(task))
 }
 
 func (h *TaskHandler) delete(w http.ResponseWriter, r *http.Request) {
@@ -136,5 +168,4 @@ func getTaskIDFromURL(r *http.Request) (int64, error) {
 		return 0, err
 	}
 	return int64(taskIDInt), nil
-
 }
