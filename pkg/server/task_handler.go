@@ -38,15 +38,13 @@ func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := getUserID(r.Context())
 	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		render.JSON(w, r, nil)
+		sendResponseWithError(w, r, http.StatusUnauthorized, nil)
 		return
 	}
 	req := &dto.CreateTaskRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -59,69 +57,57 @@ func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.TaskUseCase.Create(task); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(task))
+	sendOKResponse(w, r, task)
 }
 
 func (h *TaskHandler) getAll(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := getUserID(r.Context())
 	if !ok {
-		w.WriteHeader(http.StatusUnauthorized)
-		render.JSON(w, r, nil)
+		sendResponseWithError(w, r, http.StatusUnauthorized, nil)
 		return
 	}
 
 	tasks, err := h.TaskUseCase.GetAll(userID)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(tasks))
+	sendOKResponse(w, r, tasks)
 }
 
 func (h *TaskHandler) getByID(w http.ResponseWriter, r *http.Request) {
-	//TO THINK: mayby I should to pass in argument userID
 	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	task, err := h.TaskUseCase.GetByID(taskID)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(task))
+	sendOKResponse(w, r, task)
 }
 
-// TODO: divide into several parts
 func (h *TaskHandler) update(w http.ResponseWriter, r *http.Request) {
 	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	req := &dto.UpdateTaskRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -135,30 +121,26 @@ func (h *TaskHandler) update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.TaskUseCase.Update(task); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(task))
+	sendOKResponse(w, r, task)
 }
 
 func (h *TaskHandler) delete(w http.ResponseWriter, r *http.Request) {
 	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := h.TaskUseCase.Delete(taskID); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		render.JSON(w, r, dto.NewResponse(err.Error()))
+		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	sendOKResponse(w, r, nil)
 }
 
 func getTaskIDFromURL(r *http.Request) (int64, error) {

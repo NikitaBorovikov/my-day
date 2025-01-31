@@ -2,9 +2,12 @@ package server
 
 import (
 	"context"
+	"net/http"
 	"toDoApp/pkg/config"
+	"toDoApp/pkg/dto"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
 	"github.com/gorilla/sessions"
 )
 
@@ -61,4 +64,14 @@ func initSession(key string) {
 func getUserID(ctx context.Context) (int64, bool) {
 	userID, ok := ctx.Value(UserIDKey).(int64)
 	return userID, ok
+}
+
+func sendResponseWithError(w http.ResponseWriter, r *http.Request, statusCode int, data interface{}) {
+	w.WriteHeader(statusCode)
+	render.JSON(w, r, dto.NewResponse(data))
+}
+
+func sendOKResponse(w http.ResponseWriter, r *http.Request, data interface{}) {
+	w.WriteHeader(http.StatusOK)
+	render.JSON(w, r, dto.NewResponse(data))
 }
