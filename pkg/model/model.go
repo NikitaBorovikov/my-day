@@ -28,6 +28,13 @@ type Event struct {
 	AppointedDate string `json:"appointed_date"`
 }
 
+type MyDay struct {
+	UserID int64   `json:"user_id"`
+	Date   string  `json:"date"`
+	Tasks  []Task  `json:"tasks"`
+	Events []Event `json:"events"`
+}
+
 type UserRepository interface {
 	SignUp(u *User) error
 	SignIn(email, password string) (*User, error)
@@ -47,4 +54,8 @@ type EventRepository interface {
 	GetByID(eventID int64) (*Event, error)
 	Update(e *Event) error
 	Delete(eventID int64) error
+}
+
+type MyDayRepository interface {
+	Get(userID int64, date string) (*MyDay, error)
 }

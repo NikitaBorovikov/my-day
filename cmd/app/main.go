@@ -28,16 +28,19 @@ func main() {
 	userRepo := postgres.NewUserRepositoty(db)
 	taskRepo := postgres.NewTaskRepository(db)
 	eventRepo := postgres.NewEventRepository(db)
+	myDayRepo := postgres.NewMyDayRepository(db)
 
 	userUseCase := usecases.NewUserUseCase(userRepo)
 	taskUseCase := usecases.NewTaskUseCase(taskRepo)
 	eventUseCase := usecases.NewEventUseCase(eventRepo)
+	myDayUseCase := usecases.NewMyDayUseCase(myDayRepo)
 
 	userHandler := server.NewUserHandler(userUseCase)
 	taskHandler := server.NewTaskHandler(taskUseCase)
 	eventHandler := server.NewEventHandler(eventUseCase)
+	myDayHandler := server.NewMyDayHandler(myDayUseCase)
 
-	handler := server.InitHandlers(userHandler, taskHandler, eventHandler)
+	handler := server.InitHandlers(userHandler, taskHandler, eventHandler, myDayHandler)
 
 	server := server.Start(handler, config)
 	if err := http.ListenAndServe(config.Http.Port, server); err != nil {

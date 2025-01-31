@@ -20,13 +20,15 @@ type Handlers struct {
 	userHandler  *UserHandler
 	taskHandler  *TaskHandler
 	eventHandler *EventHandler
+	myDayHandler *MyDayHandler
 }
 
-func InitHandlers(userHandler *UserHandler, taskHandler *TaskHandler, eventHandler *EventHandler) *Handlers {
+func InitHandlers(userHandler *UserHandler, taskHandler *TaskHandler, eventHandler *EventHandler, myDayHandler *MyDayHandler) *Handlers {
 	return &Handlers{
 		userHandler:  userHandler,
 		taskHandler:  taskHandler,
 		eventHandler: eventHandler,
+		myDayHandler: myDayHandler,
 	}
 }
 
@@ -44,6 +46,8 @@ func initRouters(h *Handlers) *chi.Mux {
 	r.Post("/reg", h.userHandler.signUp)
 	r.Post("/login", h.userHandler.signIn)
 	r.Post("/logout", logOut)
+
+	r.Get("/myday", h.myDayHandler.Get)
 
 	r.Route("/task", func(r chi.Router) {
 		h.taskHandler.registerRouters(r)
