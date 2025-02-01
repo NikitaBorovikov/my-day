@@ -23,6 +23,10 @@ func (uc *MyDayUseCase) Get(userID int64, date string) (*model.MyDay, error) {
 	}
 
 	myDay, err := uc.MyDayRepository.Get(userID, formatedDate)
+
+	myDay.UserID = userID
+	myDay.Date = formatedDate
+
 	return myDay, err
 }
 
