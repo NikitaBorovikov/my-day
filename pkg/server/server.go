@@ -47,14 +47,16 @@ func initRouters(h *Handlers) *chi.Mux {
 	r.Post("/login", h.userHandler.signIn)
 	r.Post("/logout", logOut)
 
-	r.Get("/myday", h.myDayHandler.Get)
-
 	r.Route("/task", func(r chi.Router) {
 		h.taskHandler.registerRouters(r)
 	})
 
 	r.Route("/event", func(r chi.Router) {
 		h.eventHandler.registerRouters(r)
+	})
+
+	r.Route("/myday", func(r chi.Router) {
+		h.myDayHandler.registerRouters(r)
 	})
 
 	return r
