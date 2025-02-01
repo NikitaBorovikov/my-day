@@ -5,6 +5,7 @@ import (
 	"toDoApp/pkg/usecases"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/sirupsen/logrus"
 )
 
 type MyDayHandler struct {
@@ -17,10 +18,17 @@ func NewMyDayHandler(myDayUseCase *usecases.MyDayUseCase) *MyDayHandler {
 	}
 }
 
-func (h *MyDayHandler) Get(w http.ResponseWriter, r *http.Request) {
+func (h *MyDayHandler) registerRouters(r chi.Router) {
+	r.Use(AuthMiddleware)
+
+	r.Get("/{date}", h.get)
+}
+
+func (h *MyDayHandler) get(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := getUserID(r.Context())
 	if !ok {
+		logrus.Info("tut")
 		sendResponseWithError(w, r, http.StatusUnauthorized, nil)
 		return
 	}
