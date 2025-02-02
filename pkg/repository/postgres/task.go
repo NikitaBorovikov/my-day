@@ -1,15 +1,16 @@
 package postgres
 
 import (
-	"database/sql"
 	"toDoApp/pkg/model"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type TaskRepository struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewTaskRepository(db *sql.DB) model.TaskRepository {
+func NewTaskRepository(db *sqlx.DB) model.TaskRepository {
 	return &TaskRepository{
 		db: db,
 	}

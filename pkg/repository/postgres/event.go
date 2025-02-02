@@ -1,15 +1,16 @@
 package postgres
 
 import (
-	"database/sql"
 	"toDoApp/pkg/model"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type EventRepository struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewEventRepository(db *sql.DB) model.EventRepository {
+func NewEventRepository(db *sqlx.DB) model.EventRepository {
 	return &EventRepository{
 		db: db,
 	}

@@ -1,15 +1,16 @@
 package postgres
 
 import (
-	"database/sql"
 	"toDoApp/pkg/model"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type MyDayRepository struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewMyDayRepository(db *sql.DB) model.MyDayRepository {
+func NewMyDayRepository(db *sqlx.DB) model.MyDayRepository {
 	return &MyDayRepository{
 		db: db,
 	}

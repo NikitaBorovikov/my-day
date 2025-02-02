@@ -1,15 +1,16 @@
 package postgres
 
 import (
-	"database/sql"
 	"toDoApp/pkg/model"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type UserRepository struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewUserRepositoty(db *sql.DB) model.UserRepository {
+func NewUserRepositoty(db *sqlx.DB) model.UserRepository {
 	return &UserRepository{
 		db: db,
 	}
