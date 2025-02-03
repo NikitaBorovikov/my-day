@@ -43,9 +43,15 @@ func Start(h *Handlers, cfg *config.Config) *chi.Mux {
 func initRouters(h *Handlers) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(CORSMiddleware())
+
 	r.Post("/reg", h.userHandler.signUp)
 	r.Post("/login", h.userHandler.signIn)
-	r.Post("/logout", logOut)
+
+	r.Route("/profile", func(r chi.Router) {
+		r.Use(AuthMiddleware)
+		r.Delete("/", h.userHandler.delete)
+		r.Post("/logout", logOut)
+	})
 
 	r.Route("/task", func(r chi.Router) {
 		h.taskHandler.registerRouters(r)

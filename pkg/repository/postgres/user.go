@@ -35,3 +35,44 @@ func (r *UserRepository) SignIn(email, password string) (*model.User, error) {
 
 	return u, nil
 }
+
+func (r *UserRepository) Delete(userID int64) error {
+
+	errorChannel := make(chan error, 3)
+
+	go func() {
+		_, err := r.db.Exec("DELETE FROM users WHERE id = $1", userID)
+		errorChannel <- err
+	}()
+
+	go func() {
+		_, err := r.db.Exec("DELETE FROM task WHERE user_id = $1", userID)
+		errorChannel <- err
+	}()
+
+	go func() {
+		_, err := r.db.Exec("DELETE FROM events WHERE user_id = $1", userID)
+		errorChannel <- err
+	}()
+
+	go func() {
+		defer close(errorChannel)
+		for i := 0; i < 3; i++ {
+			<-errorChannel
+		}
+	}()
+
+	firstError := findFirstError(errorChannel)
+	return firstError
+}
+
+func findFirstError(errorChannel chan error) error {
+	var firstError error
+	for err := range errorChannel {
+		if err != nil {
+			firstError = err
+		}
+	}
+
+	return firstError
+}

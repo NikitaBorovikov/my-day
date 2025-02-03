@@ -50,6 +50,11 @@ func (uc *UserUseCase) SignIn(email, password string) (*model.User, error) {
 	return u, nil
 }
 
+func (uc *UserUseCase) Delete(userID int64) error {
+	err := uc.UserRepository.Delete(userID)
+	return err
+}
+
 func setDefaultValuesForUser(u *model.User) {
 	u.RegDate = time.Now().Format(time.RFC3339)
 }

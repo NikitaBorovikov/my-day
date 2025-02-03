@@ -65,6 +65,23 @@ func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (h *UserHandler) delete(w http.ResponseWriter, r *http.Request) {
+	userID, ok := getUserID(r.Context())
+	if !ok {
+		sendResponseWithError(w, r, http.StatusUnauthorized, nil)
+		return
+	}
+
+	go func() {
+		if err := h.UserUseCase.Delete(userID); err != nil {
+			sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+			return
+		}
+	}()
+
+	go logOut(w, r)
+}
+
 func logOut(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, sessionKey)
 	if err != nil {

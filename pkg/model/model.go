@@ -38,6 +38,7 @@ type MyDay struct {
 type UserRepository interface {
 	SignUp(u *User) error
 	SignIn(email, password string) (*User, error)
+	Delete(userID int64) error
 }
 
 type TaskRepository interface {
