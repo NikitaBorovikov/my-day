@@ -1,7 +1,10 @@
 package main
 
 import (
-	"net/http"
+	"context"
+	"os"
+	"os/signal"
+	"syscall"
 	"toDoApp/pkg/config"
 	"toDoApp/pkg/db"
 	"toDoApp/pkg/repository/postgres"
@@ -23,7 +26,6 @@ func main() {
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	defer db.Close()
 
 	userRepo := postgres.NewUserRepositoty(db)
 	taskRepo := postgres.NewTaskRepository(db)
@@ -42,8 +44,28 @@ func main() {
 
 	handler := server.InitHandlers(userHandler, taskHandler, eventHandler, myDayHandler)
 
-	server := server.Start(handler, config)
-	if err := http.ListenAndServe(config.Http.Port, server); err != nil {
-		logrus.Fatal(err)
+	srv := server.Server{}
+
+	go func() {
+		if err := srv.Run(handler, config); err != nil {
+			logrus.Fatal(err)
+		}
+	}()
+
+	logrus.Info("server is running")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Info("server is shutting down")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}
+
+	if err := db.Close(); err != nil {
+		logrus.Errorf("error occured on db connection close: %s", err.Error())
+	}
+
 }

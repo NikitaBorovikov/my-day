@@ -32,12 +32,25 @@ func InitHandlers(userHandler *UserHandler, taskHandler *TaskHandler, eventHandl
 	}
 }
 
-func Start(h *Handlers, cfg *config.Config) *chi.Mux {
+type Server struct {
+	httpServer *http.Server
+}
 
+func (s *Server) Run(h *Handlers, cfg *config.Config) error {
 	initSession(cfg.Http.SessionKey)
 
-	server := initRouters(h)
-	return server
+	router := initRouters(h)
+
+	s.httpServer = &http.Server{
+		Addr:    cfg.Http.Port,
+		Handler: router,
+	}
+
+	return s.httpServer.ListenAndServe()
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.httpServer.Shutdown(ctx)
 }
 
 func initRouters(h *Handlers) *chi.Mux {
