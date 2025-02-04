@@ -7,7 +7,8 @@ import (
 	"syscall"
 	"toDoApp/pkg/config"
 	"toDoApp/pkg/db"
-	"toDoApp/pkg/repository/postgres"
+	"toDoApp/pkg/handlers"
+	"toDoApp/pkg/repository"
 	"toDoApp/pkg/server"
 	"toDoApp/pkg/usecases"
 
@@ -27,27 +28,14 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	userRepo := postgres.NewUserRepositoty(db)
-	taskRepo := postgres.NewTaskRepository(db)
-	eventRepo := postgres.NewEventRepository(db)
-	myDayRepo := postgres.NewMyDayRepository(db)
-
-	userUseCase := usecases.NewUserUseCase(userRepo)
-	taskUseCase := usecases.NewTaskUseCase(taskRepo)
-	eventUseCase := usecases.NewEventUseCase(eventRepo)
-	myDayUseCase := usecases.NewMyDayUseCase(myDayRepo)
-
-	userHandler := server.NewUserHandler(userUseCase)
-	taskHandler := server.NewTaskHandler(taskUseCase)
-	eventHandler := server.NewEventHandler(eventUseCase)
-	myDayHandler := server.NewMyDayHandler(myDayUseCase)
-
-	handler := server.InitHandlers(userHandler, taskHandler, eventHandler, myDayHandler)
+	repository := repository.InitRepository(db)
+	usecases := usecases.InitUseCases(repository)
+	handlers := handlers.InitHandlers(usecases)
 
 	srv := server.Server{}
 
 	go func() {
-		if err := srv.Run(handler, config); err != nil {
+		if err := srv.Run(handlers, config); err != nil {
 			logrus.Fatal(err)
 		}
 	}()
