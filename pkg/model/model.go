@@ -39,6 +39,7 @@ type UserRepository interface {
 	SignUp(u *User) error
 	SignIn(email, password string) (*User, error)
 	Delete(userID int64) error
+	Get(userID int64) (*User, error)
 }
 
 type TaskRepository interface {

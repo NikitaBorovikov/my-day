@@ -50,6 +50,11 @@ func (uc *UserUseCase) SignIn(email, password string) (*model.User, error) {
 	return u, nil
 }
 
+func (uc *UserUseCase) Get(userID int64) (*model.User, error) {
+	user, err := uc.UserRepository.Get(userID)
+	return user, err
+}
+
 func (uc *UserUseCase) Delete(userID int64) error {
 	err := uc.UserRepository.Delete(userID)
 	return err

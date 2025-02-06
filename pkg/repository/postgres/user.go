@@ -36,6 +36,15 @@ func (r *UserRepository) SignIn(email, password string) (*model.User, error) {
 	return u, nil
 }
 
+func (r *UserRepository) Get(userID int64) (*model.User, error) {
+	u := &model.User{}
+
+	err := r.db.QueryRow("SELECT user_name, email, reg_date FROM users WHERE id = $1", userID).Scan(
+		&u.UserName, &u.Email, &u.RegDate)
+
+	return u, err
+}
+
 func (r *UserRepository) Delete(userID int64) error {
 
 	errorChannel := make(chan error, 3)

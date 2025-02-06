@@ -35,6 +35,7 @@ func (h *Handlers) InitRouters() *chi.Mux {
 
 	r.Route("/profile", func(r chi.Router) {
 		r.Use(AuthMiddleware)
+		r.Get("/", h.userHandler.get)
 		r.Delete("/", h.userHandler.delete)
 		r.Post("/logout", logOut)
 	})
