@@ -18,9 +18,7 @@ func NewUserRepository(db *sqlx.DB) model.UserRepository {
 
 func (r *UserRepository) SignUp(u *model.User) error {
 
-	query := "INSERT INTO users (user_name, email, enc_password, reg_date) VALUES ($1, $2, $3, $4)"
-
-	_, err := r.db.Exec(query, u.UserName, u.Email, u.EncPassword, u.RegDate)
+	_, err := r.db.Exec(querySignUp, u.UserName, u.Email, u.EncPassword, u.RegDate)
 
 	if err != nil {
 		return err
@@ -31,18 +29,14 @@ func (r *UserRepository) SignUp(u *model.User) error {
 func (r *UserRepository) SignIn(email, password string) (*model.User, error) {
 	u := &model.User{}
 
-	query := "SELECT id, user_name, enc_password FROM users WHERE email = $1"
-
-	err := r.db.QueryRow(query, email).Scan(&u.ID, &u.UserName, &u.EncPassword)
+	err := r.db.QueryRow(querySignIn, email).Scan(&u.ID, &u.UserName, &u.EncPassword)
 	return u, err
 }
 
 func (r *UserRepository) Get(userID int64) (*model.User, error) {
 	u := &model.User{}
 
-	query := "SELECT user_name, email, reg_date FROM users WHERE id = $1"
-
-	err := r.db.QueryRow(query, userID).Scan(&u.UserName, &u.Email, &u.RegDate)
+	err := r.db.QueryRow(queryGetProfile, userID).Scan(&u.UserName, &u.Email, &u.RegDate)
 	return u, err
 }
 

@@ -18,18 +18,14 @@ func NewEventRepository(db *sqlx.DB) model.EventRepository {
 
 func (r *EventRepository) Create(e *model.Event) error {
 
-	query := "INSERT INTO events (user_id, name, description, appointed_date) VALUES ($1, $2, $3, $4)"
-
-	_, err := r.db.Exec(query, e.UserID, e.Name, e.Description, e.AppointedDate)
+	_, err := r.db.Exec(queryCreateEvent, e.UserID, e.Name, e.Description, e.AppointedDate)
 
 	return err
 }
 
 func (r *EventRepository) GetAll(userID int64) ([]model.Event, error) {
 
-	query := "SELECT name, description, appointed_date FROM events WHERE user_id = $1"
-
-	rows, err := r.db.Query(query, userID)
+	rows, err := r.db.Query(queryGetAllEvents, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -49,23 +45,18 @@ func (r *EventRepository) GetAll(userID int64) ([]model.Event, error) {
 func (r *EventRepository) GetByID(eventID int64) (*model.Event, error) {
 	e := &model.Event{}
 
-	query := "SELECT name, description, appointed_date FROM events WHERE id = $1"
-
-	err := r.db.QueryRow(query, eventID).Scan(&e.Name, &e.Description, &e.AppointedDate)
+	err := r.db.QueryRow(queryGetEventByID, eventID).Scan(&e.Name, &e.Description, &e.AppointedDate)
 
 	return e, err
 }
 
 func (r *EventRepository) Update(e *model.Event) error {
 
-	query := "UPDATE events SET name = $1, description = $2, appointed_date = $3 WHERE id = $4"
-
-	_, err := r.db.Exec(query, e.Name, e.Description, e.AppointedDate, e.ID)
+	_, err := r.db.Exec(queryUpdateEvent, e.Name, e.Description, e.AppointedDate, e.ID)
 	return err
 }
 
 func (r *EventRepository) Delete(eventID int64) error {
-	query := "DELETE FROM events WHERE id = $1"
-	_, err := r.db.Exec(query, eventID)
+	_, err := r.db.Exec(queryDeleteEvent, eventID)
 	return err
 }
