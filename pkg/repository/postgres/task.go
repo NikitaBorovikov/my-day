@@ -17,14 +17,18 @@ func NewTaskRepository(db *sqlx.DB) model.TaskRepository {
 }
 
 func (r *TaskRepository) Create(t *model.Task) error {
-	_, err := r.db.Exec(
-		"INSERT INTO task (user_id, title, description, is_important, due_date, created_date, is_done) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-		t.UserID, t.Title, t.Description, t.IsImportant, t.DueDate, t.CreatedDate, t.IsDone)
+
+	query := "INSERT INTO task (user_id, title, description, is_important, due_date, created_date, is_done) VALUES ($1, $2, $3, $4, $5, $6, $7)"
+
+	_, err := r.db.Exec(query, t.UserID, t.Title, t.Description, t.IsImportant, t.DueDate, t.CreatedDate, t.IsDone)
 	return err
 }
 
 func (r *TaskRepository) GetAll(userID int64) ([]model.Task, error) {
-	rows, err := r.db.Query("SELECT title, description, is_important, is_done, due_date, created_date FROM task WHERE user_id = $1", userID)
+
+	query := "SELECT title, description, is_important, is_done, due_date, created_date FROM task WHERE user_id = $1"
+
+	rows, err := r.db.Query(query, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -46,22 +50,26 @@ func (r *TaskRepository) GetAll(userID int64) ([]model.Task, error) {
 func (r *TaskRepository) GetByID(taskID int64) (*model.Task, error) {
 	task := &model.Task{}
 
-	err := r.db.QueryRow("SELECT user_id, title, description, is_important, is_done, due_date, created_date FROM task WHERE id = $1", taskID).Scan(
+	query := "SELECT user_id, title, description, is_important, is_done, due_date, created_date FROM task WHERE id = $1"
+
+	err := r.db.QueryRow(query, taskID).Scan(
 		&task.UserID, &task.Title, &task.Description, &task.IsImportant, &task.IsDone, &task.DueDate, &task.CreatedDate)
-	if err != nil {
-		return nil, err
-	}
-	return task, nil
+
+	return task, err
 }
 
 func (r *TaskRepository) Update(t *model.Task) error {
-	_, err := r.db.Exec("UPDATE task SET title = $1, description = $2, is_important = $3, due_date = $4, is_done = $5 WHERE id = $6",
-		t.Title, t.Description, t.IsImportant, t.DueDate, t.IsDone, &t.ID)
 
+	query := "UPDATE task SET title = $1, description = $2, is_important = $3, due_date = $4, is_done = $5 WHERE id = $6"
+
+	_, err := r.db.Exec(query, t.Title, t.Description, t.IsImportant, t.DueDate, t.IsDone, &t.ID)
 	return err
 }
 
 func (r *TaskRepository) Delete(taskID int64) error {
-	_, err := r.db.Exec("DELETE FROM task WHERE id = $1", taskID)
+
+	query := "DELETE FROM task WHERE id = $1"
+
+	_, err := r.db.Exec(query, taskID)
 	return err
 }

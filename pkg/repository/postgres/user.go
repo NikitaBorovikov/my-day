@@ -17,8 +17,11 @@ func NewUserRepository(db *sqlx.DB) model.UserRepository {
 }
 
 func (r *UserRepository) SignUp(u *model.User) error {
-	_, err := r.db.Exec("INSERT INTO users (user_name, email, enc_password, reg_date) VALUES ($1, $2, $3, $4)",
-		u.UserName, u.Email, u.EncPassword, u.RegDate)
+
+	query := "INSERT INTO users (user_name, email, enc_password, reg_date) VALUES ($1, $2, $3, $4)"
+
+	_, err := r.db.Exec(query, u.UserName, u.Email, u.EncPassword, u.RegDate)
+
 	if err != nil {
 		return err
 	}
@@ -28,20 +31,18 @@ func (r *UserRepository) SignUp(u *model.User) error {
 func (r *UserRepository) SignIn(email, password string) (*model.User, error) {
 	u := &model.User{}
 
-	if err := r.db.QueryRow("SELECT id, user_name, enc_password FROM users WHERE email = $1", email).Scan(
-		&u.ID, &u.UserName, &u.EncPassword); err != nil {
-		return nil, err
-	}
+	query := "SELECT id, user_name, enc_password FROM users WHERE email = $1"
 
-	return u, nil
+	err := r.db.QueryRow(query, email).Scan(&u.ID, &u.UserName, &u.EncPassword)
+	return u, err
 }
 
 func (r *UserRepository) Get(userID int64) (*model.User, error) {
 	u := &model.User{}
 
-	err := r.db.QueryRow("SELECT user_name, email, reg_date FROM users WHERE id = $1", userID).Scan(
-		&u.UserName, &u.Email, &u.RegDate)
+	query := "SELECT user_name, email, reg_date FROM users WHERE id = $1"
 
+	err := r.db.QueryRow(query, userID).Scan(&u.UserName, &u.Email, &u.RegDate)
 	return u, err
 }
 
@@ -50,17 +51,20 @@ func (r *UserRepository) Delete(userID int64) error {
 	errorChannel := make(chan error, 3)
 
 	go func() {
-		_, err := r.db.Exec("DELETE FROM users WHERE id = $1", userID)
+		query := "DELETE FROM users WHERE id = $1"
+		_, err := r.db.Exec(query, userID)
 		errorChannel <- err
 	}()
 
 	go func() {
-		_, err := r.db.Exec("DELETE FROM task WHERE user_id = $1", userID)
+		query := "DELETE FROM task WHERE user_id = $1"
+		_, err := r.db.Exec(query, userID)
 		errorChannel <- err
 	}()
 
 	go func() {
-		_, err := r.db.Exec("DELETE FROM events WHERE user_id = $1", userID)
+		query := "DELETE FROM events WHERE user_id = $1"
+		_, err := r.db.Exec(query, userID)
 		errorChannel <- err
 	}()
 
