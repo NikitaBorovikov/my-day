@@ -6,8 +6,11 @@ import (
 	"toDoApp/pkg/dto"
 	"toDoApp/pkg/usecases"
 
+	_ "toDoApp/docs"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 type Handlers struct {
@@ -51,6 +54,11 @@ func (h *Handlers) InitRouters() *chi.Mux {
 	r.Route("/myday", func(r chi.Router) {
 		h.myDayHandler.registerRouters(r)
 	})
+
+	//swagger
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:2323/swagger/doc.json"),
+	))
 
 	return r
 }

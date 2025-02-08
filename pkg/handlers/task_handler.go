@@ -34,6 +34,14 @@ func (h *TaskHandler) registerRouters(r chi.Router) {
 
 }
 
+// @Summary Create New Task
+// @Security sessionKey
+// @Tags tasks
+// @Description create new task
+// @Accept  json
+// @Produce  json
+// @Param input body dto.CreateTaskRequest true "task info"
+// @Router /task/ [post]
 func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := getUserID(r.Context())
@@ -64,6 +72,13 @@ func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, task)
 }
 
+// @Summary Get All Tasks
+// @Security sessionKey
+// @Tags tasks
+// @Description get all tasks
+// @Accept  json
+// @Produce  json
+// @Router /task/ [get]
 func (h *TaskHandler) getAll(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := getUserID(r.Context())
@@ -81,6 +96,13 @@ func (h *TaskHandler) getAll(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, tasks)
 }
 
+// @Summary Get Task By ID
+// @Security sessionKey
+// @Tags tasks
+// @Description get task by ID
+// @Accept  json
+// @Produce  json
+// @Router /task/{taskID} [get]
 func (h *TaskHandler) getByID(w http.ResponseWriter, r *http.Request) {
 	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
@@ -97,6 +119,14 @@ func (h *TaskHandler) getByID(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, task)
 }
 
+// @Summary Update Task
+// @Security sessionKey
+// @Tags tasks
+// @Description update task
+// @Accept  json
+// @Produce  json
+// @Param input body dto.UpdateTaskRequest true "task info"
+// @Router /task/{taskID} [put]
 func (h *TaskHandler) update(w http.ResponseWriter, r *http.Request) {
 	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
@@ -128,6 +158,13 @@ func (h *TaskHandler) update(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, task)
 }
 
+// @Summary Delete Task
+// @Security sessionKey
+// @Tags tasks
+// @Description delete task
+// @Accept  json
+// @Produce  json
+// @Router /task/{taskID} [delete]
 func (h *TaskHandler) delete(w http.ResponseWriter, r *http.Request) {
 	taskID, err := getTaskIDFromURL(r)
 	if err != nil {

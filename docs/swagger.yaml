@@ -1,0 +1,306 @@
+basePath: /
+definitions:
+  dto.CreateEventRequest:
+    properties:
+      appointed_date:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.CreateTaskRequest:
+    properties:
+      description:
+        type: string
+      due_date:
+        type: string
+      is_important:
+        type: boolean
+      title:
+        type: string
+    type: object
+  dto.SignInRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.SignUpRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      user_name:
+        type: string
+    type: object
+  dto.UpdateEventRequest:
+    properties:
+      appointed_date:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.UpdateTaskRequest:
+    properties:
+      description:
+        type: string
+      due_date:
+        type: string
+      id_done:
+        type: boolean
+      is_important:
+        type: boolean
+      title:
+        type: string
+    type: object
+host: localhost:2323
+info:
+  contact: {}
+  description: REST API for planning your day
+  title: MyDay App API
+  version: "1.0"
+paths:
+  /event/:
+    get:
+      consumes:
+      - application/json
+      description: get all events
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Get All Events
+      tags:
+      - events
+    post:
+      consumes:
+      - application/json
+      description: create new event
+      parameters:
+      - description: event info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateEventRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Create New Event
+      tags:
+      - events
+  /event/{eventID}:
+    delete:
+      consumes:
+      - application/json
+      description: delete event
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Delete Event
+      tags:
+      - events
+    get:
+      consumes:
+      - application/json
+      description: get event by ID
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Get Event By ID
+      tags:
+      - events
+    put:
+      consumes:
+      - application/json
+      description: update event
+      parameters:
+      - description: event info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateEventRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Update Event
+      tags:
+      - events
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: login
+      parameters:
+      - description: login data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignInRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: SignIn
+      tags:
+      - auth
+  /myDay/{date}:
+    get:
+      consumes:
+      - application/json
+      description: get myDay info
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Get MyDay Info
+      tags:
+      - myDay
+  /profile/:
+    delete:
+      consumes:
+      - application/json
+      description: delete user's profiles
+      produces:
+      - application/json
+      responses: {}
+      summary: Delete User's profile
+      tags:
+      - profile
+    get:
+      consumes:
+      - application/json
+      description: get user's profile info
+      produces:
+      - application/json
+      responses: {}
+      summary: Get User's Profile Info
+      tags:
+      - profile
+  /profile/logout:
+    post:
+      consumes:
+      - application/json
+      description: logout
+      produces:
+      - application/json
+      responses: {}
+      summary: logout
+      tags:
+      - profile
+  /reg:
+    post:
+      consumes:
+      - application/json
+      description: registration
+      parameters:
+      - description: user info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignUpRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: SignUp
+      tags:
+      - auth
+  /task/:
+    get:
+      consumes:
+      - application/json
+      description: get all tasks
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Get All Tasks
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: create new task
+      parameters:
+      - description: task info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTaskRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Create New Task
+      tags:
+      - tasks
+  /task/{taskID}:
+    delete:
+      consumes:
+      - application/json
+      description: delete task
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Delete Task
+      tags:
+      - tasks
+    get:
+      consumes:
+      - application/json
+      description: get task by ID
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Get Task By ID
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: update task
+      parameters:
+      - description: task info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTaskRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - sessionKey: []
+      summary: Update Task
+      tags:
+      - tasks
+securityDefinitions:
+  sessionKey:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

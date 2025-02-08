@@ -20,6 +20,13 @@ func NewUserHandler(userUseCase *usecases.UserUseCase) *UserHandler {
 	}
 }
 
+// @Summary SignUp
+// @Tags auth
+// @Description registration
+// @Accept  json
+// @Produce  json
+// @Param input body dto.SignUpRequest true "user info"
+// @Router /reg [post]
 func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	req := &dto.SignUpRequest{}
 
@@ -41,6 +48,13 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, user)
 }
 
+// @Summary SignIn
+// @Tags auth
+// @Description login
+// @Accept  json
+// @Produce  json
+// @Param input body dto.SignInRequest true "login data"
+// @Router /login [post]
 func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 
 	req := &dto.SignInRequest{}
@@ -65,6 +79,12 @@ func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// @Summary Get User's Profile Info
+// @Tags profile
+// @Description get user's profile info
+// @Accept  json
+// @Produce  json
+// @Router /profile/ [get]
 func (h *UserHandler) get(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
 	if !ok {
@@ -81,6 +101,12 @@ func (h *UserHandler) get(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, userInfo)
 }
 
+// @Summary Delete User's profile
+// @Tags profile
+// @Description delete user's profiles
+// @Accept  json
+// @Produce  json
+// @Router /profile/ [delete]
 func (h *UserHandler) delete(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
 	if !ok {
@@ -98,6 +124,12 @@ func (h *UserHandler) delete(w http.ResponseWriter, r *http.Request) {
 	go logOut(w, r)
 }
 
+// @Summary logout
+// @Tags profile
+// @Description logout
+// @Accept  json
+// @Produce  json
+// @Router /profile/logout [post]
 func logOut(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, sessionKey)
 	if err != nil {

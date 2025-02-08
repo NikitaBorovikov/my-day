@@ -16,6 +16,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// @title MyDay App API
+// @version 1.0
+// @description REST API for planning your day
+
+// @host localhost:2323
+// @BasePath /
+
+// @securityDefinitions.apikey sessionKey
+// @in header
+// @name Authorization
 func main() {
 
 	config, err := config.Init()
