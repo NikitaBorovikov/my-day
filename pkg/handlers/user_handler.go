@@ -26,14 +26,14 @@ func NewUserHandler(userUseCase *usecases.UserUseCase) *UserHandler {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} model.User
-// @Failure 400,401,403,422 {object} dto.Response
+// @Failure 400,401,403,422 {object} dto.ErrorResponse
 // @Param input body dto.SignUpRequest true "user info"
 // @Router /reg [post]
 func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	req := &dto.SignUpRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -44,7 +44,7 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.UserUseCase.SignUp(user); err != nil {
-		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err.Error())
+		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err)
 		return
 	}
 	sendOKResponse(w, r, user)
@@ -56,7 +56,7 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {integer} {userID}
-// @Failure 400,401,403,500 {object} dto.Response
+// @Failure 400,401,403,500 {object} dto.ErrorResponse
 // @Param input body dto.SignInRequest true "login data"
 // @Router /login [post]
 func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +64,7 @@ func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 	req := &dto.SignInRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -75,7 +75,7 @@ func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := setUserSession(w, r, user); err != nil {
-		sendResponseWithError(w, r, http.StatusInternalServerError, err.Error())
+		sendResponseWithError(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -89,7 +89,7 @@ func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} model.User
-// @Failure 400,401,403 {object} dto.Response
+// @Failure 400,401,403 {object} dto.ErrorResponse
 // @Router /profile/ [get]
 func (h *UserHandler) get(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
@@ -100,7 +100,7 @@ func (h *UserHandler) get(w http.ResponseWriter, r *http.Request) {
 
 	userInfo, err := h.UserUseCase.Get(userID)
 	if err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -113,7 +113,7 @@ func (h *UserHandler) get(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200
-// @Failure 400,401,403 {object} dto.Response
+// @Failure 400,401,403 {object} dto.ErrorResponse
 // @Router /profile/ [delete]
 func (h *UserHandler) delete(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
@@ -124,7 +124,7 @@ func (h *UserHandler) delete(w http.ResponseWriter, r *http.Request) {
 
 	go func() {
 		if err := h.UserUseCase.Delete(userID); err != nil {
-			sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+			sendResponseWithError(w, r, http.StatusBadRequest, err)
 			return
 		}
 	}()
@@ -140,19 +140,19 @@ func (h *UserHandler) delete(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200
-// @Failure 500 {object} dto.Response
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /profile/logout [post]
 func logOut(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, sessionKey)
 	if err != nil {
-		sendResponseWithError(w, r, http.StatusInternalServerError, err.Error())
+		sendResponseWithError(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
 	cleanSessionInfo(session)
 
 	if err := session.Save(r, w); err != nil {
-		sendResponseWithError(w, r, http.StatusInternalServerError, err.Error())
+		sendResponseWithError(w, r, http.StatusInternalServerError, err)
 		return
 	}
 

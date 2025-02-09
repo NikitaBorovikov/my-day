@@ -68,12 +68,12 @@ func getUserID(ctx context.Context) (int64, bool) {
 	return userID, ok
 }
 
-func sendResponseWithError(w http.ResponseWriter, r *http.Request, statusCode int, data interface{}) {
+func sendResponseWithError(w http.ResponseWriter, r *http.Request, statusCode int, err error) {
 	w.WriteHeader(statusCode)
-	render.JSON(w, r, dto.NewResponse(data))
+	render.JSON(w, r, dto.NewErrorResponse(err))
 }
 
 func sendOKResponse(w http.ResponseWriter, r *http.Request, data interface{}) {
 	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, dto.NewResponse(data))
+	render.JSON(w, r, dto.NewOKResponse(data))
 }

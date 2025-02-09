@@ -15,7 +15,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		session, err := sessionStore.Get(r, sessionKey)
 		if err != nil {
-			sendResponseWithError(w, r, http.StatusInternalServerError, err.Error())
+			sendResponseWithError(w, r, http.StatusInternalServerError, err)
 			return
 		}
 

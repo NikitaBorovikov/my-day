@@ -41,7 +41,7 @@ func (h *TaskHandler) registerRouters(r chi.Router) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} model.Task
-// @Failure 400,401,403,422 {object} dto.Response
+// @Failure 400,401,403,422 {object} dto.ErrorResponse
 // @Param input body dto.CreateTaskRequest true "task info"
 // @Router /task/ [post]
 func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +54,7 @@ func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
 	req := &dto.CreateTaskRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -67,7 +67,7 @@ func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.TaskUseCase.Create(task); err != nil {
-		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err.Error())
+		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err)
 		return
 	}
 
@@ -81,7 +81,7 @@ func (h *TaskHandler) create(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} []model.Task
-// @Failure 400,401,403 {object} dto.Response
+// @Failure 400,401,403 {object} dto.ErrorResponse
 // @Router /task/ [get]
 func (h *TaskHandler) getAll(w http.ResponseWriter, r *http.Request) {
 
@@ -93,7 +93,7 @@ func (h *TaskHandler) getAll(w http.ResponseWriter, r *http.Request) {
 
 	tasks, err := h.TaskUseCase.GetAll(userID)
 	if err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -107,18 +107,18 @@ func (h *TaskHandler) getAll(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} model.Task
-// @Failure 400,403 {object} dto.Response
+// @Failure 400,403 {object} dto.ErrorResponse
 // @Router /task/{taskID} [get]
 func (h *TaskHandler) getByID(w http.ResponseWriter, r *http.Request) {
 	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	task, err := h.TaskUseCase.GetByID(taskID)
 	if err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -132,20 +132,20 @@ func (h *TaskHandler) getByID(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} model.Task
-// @Failure 400,403,422 {object} dto.Response
+// @Failure 400,403,422 {object} dto.ErrorResponse
 // @Param input body dto.UpdateTaskRequest true "task info"
 // @Router /task/{taskID} [put]
 func (h *TaskHandler) update(w http.ResponseWriter, r *http.Request) {
 	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	req := &dto.UpdateTaskRequest{}
 
 	if err := render.DecodeJSON(r.Body, req); err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -159,7 +159,7 @@ func (h *TaskHandler) update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.TaskUseCase.Update(task); err != nil {
-		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err.Error())
+		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err)
 		return
 	}
 
@@ -173,17 +173,17 @@ func (h *TaskHandler) update(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Success 200
-// @Failure 400,403 {object} dto.Response
+// @Failure 400,403 {object} dto.ErrorResponse
 // @Router /task/{taskID} [delete]
 func (h *TaskHandler) delete(w http.ResponseWriter, r *http.Request) {
 	taskID, err := getTaskIDFromURL(r)
 	if err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	if err := h.TaskUseCase.Delete(taskID); err != nil {
-		sendResponseWithError(w, r, http.StatusBadRequest, err.Error())
+		sendResponseWithError(w, r, http.StatusBadRequest, err)
 		return
 	}
 

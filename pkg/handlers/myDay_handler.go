@@ -30,7 +30,7 @@ func (h *MyDayHandler) registerRouters(r chi.Router) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} model.MyDay
-// @Failure 400,401,403,422 {object} dto.Response
+// @Failure 400,401,403,422 {object} dto.ErrorResponse
 // @Router /myDay/{date} [get]
 func (h *MyDayHandler) get(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
@@ -43,7 +43,7 @@ func (h *MyDayHandler) get(w http.ResponseWriter, r *http.Request) {
 
 	myDay, err := h.MyDayUseCase.Get(userID, date)
 	if err != nil {
-		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err.Error())
+		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err)
 		return
 	}
 
