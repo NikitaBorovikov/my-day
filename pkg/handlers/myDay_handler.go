@@ -29,6 +29,8 @@ func (h *MyDayHandler) registerRouters(r chi.Router) {
 // @Description get myDay info
 // @Accept  json
 // @Produce  json
+// @Success 200 {object} model.MyDay
+// @Failure 400,401,403,422 {object} dto.Response
 // @Router /myDay/{date} [get]
 func (h *MyDayHandler) get(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())

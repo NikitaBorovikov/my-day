@@ -20,6 +20,10 @@ definitions:
       title:
         type: string
     type: object
+  dto.Response:
+    properties:
+      data: {}
+    type: object
   dto.SignInRequest:
     properties:
       email:
@@ -58,6 +62,74 @@ definitions:
       title:
         type: string
     type: object
+  model.Event:
+    properties:
+      appointed_date:
+        type: string
+      description:
+        maxLength: 2000
+        type: string
+      name:
+        maxLength: 100
+        type: string
+      user_id:
+        type: integer
+    required:
+    - name
+    type: object
+  model.MyDay:
+    properties:
+      date:
+        type: string
+      events:
+        items:
+          $ref: '#/definitions/model.Event'
+        type: array
+      tasks:
+        items:
+          $ref: '#/definitions/model.Task'
+        type: array
+      user_id:
+        type: integer
+    type: object
+  model.Task:
+    properties:
+      created_date:
+        type: string
+      description:
+        maxLength: 2000
+        type: string
+      due_date:
+        type: string
+      is_done:
+        type: boolean
+      is_important:
+        type: boolean
+      title:
+        maxLength: 100
+        type: string
+      user_id:
+        type: integer
+    required:
+    - title
+    type: object
+  model.User:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 255
+        minLength: 7
+        type: string
+      reg_date:
+        type: string
+      user_name:
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - email
+    type: object
 host: localhost:2323
 info:
   contact: {}
@@ -72,7 +144,25 @@ paths:
       description: get all events
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Event'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Get All Events
@@ -91,7 +181,27 @@ paths:
           $ref: '#/definitions/dto.CreateEventRequest'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Event'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Create New Event
@@ -104,7 +214,17 @@ paths:
       description: delete event
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Delete Event
@@ -116,7 +236,19 @@ paths:
       description: get event by ID
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Event'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Get Event By ID
@@ -135,7 +267,23 @@ paths:
           $ref: '#/definitions/dto.UpdateEventRequest'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Event'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Update Event
@@ -155,7 +303,27 @@ paths:
           $ref: '#/definitions/dto.SignInRequest'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.Response'
       summary: SignIn
       tags:
       - auth
@@ -166,7 +334,27 @@ paths:
       description: get myDay info
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.MyDay'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Get MyDay Info
@@ -179,7 +367,21 @@ paths:
       description: delete user's profiles
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
       summary: Delete User's profile
       tags:
       - profile
@@ -189,7 +391,23 @@ paths:
       description: get user's profile info
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
       summary: Get User's Profile Info
       tags:
       - profile
@@ -200,7 +418,13 @@ paths:
       description: logout
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.Response'
       summary: logout
       tags:
       - profile
@@ -218,7 +442,27 @@ paths:
           $ref: '#/definitions/dto.SignUpRequest'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.Response'
       summary: SignUp
       tags:
       - auth
@@ -229,7 +473,25 @@ paths:
       description: get all tasks
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Task'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Get All Tasks
@@ -248,7 +510,27 @@ paths:
           $ref: '#/definitions/dto.CreateTaskRequest'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Create New Task
@@ -261,7 +543,17 @@ paths:
       description: delete task
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Delete Task
@@ -273,7 +565,19 @@ paths:
       description: get task by ID
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Get Task By ID
@@ -292,7 +596,23 @@ paths:
           $ref: '#/definitions/dto.UpdateTaskRequest'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.Response'
       security:
       - sessionKey: []
       summary: Update Task

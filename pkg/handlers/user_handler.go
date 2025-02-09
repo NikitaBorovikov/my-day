@@ -25,6 +25,8 @@ func NewUserHandler(userUseCase *usecases.UserUseCase) *UserHandler {
 // @Description registration
 // @Accept  json
 // @Produce  json
+// @Success 200 {object} model.User
+// @Failure 400,401,403,422 {object} dto.Response
 // @Param input body dto.SignUpRequest true "user info"
 // @Router /reg [post]
 func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
@@ -53,6 +55,8 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 // @Description login
 // @Accept  json
 // @Produce  json
+// @Success 200 {integer} {userID}
+// @Failure 400,401,403,500 {object} dto.Response
 // @Param input body dto.SignInRequest true "login data"
 // @Router /login [post]
 func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
@@ -84,6 +88,8 @@ func (h *UserHandler) signIn(w http.ResponseWriter, r *http.Request) {
 // @Description get user's profile info
 // @Accept  json
 // @Produce  json
+// @Success 200 {object} model.User
+// @Failure 400,401,403 {object} dto.Response
 // @Router /profile/ [get]
 func (h *UserHandler) get(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
@@ -106,6 +112,8 @@ func (h *UserHandler) get(w http.ResponseWriter, r *http.Request) {
 // @Description delete user's profiles
 // @Accept  json
 // @Produce  json
+// @Success 200
+// @Failure 400,401,403 {object} dto.Response
 // @Router /profile/ [delete]
 func (h *UserHandler) delete(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
@@ -122,6 +130,8 @@ func (h *UserHandler) delete(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	go logOut(w, r)
+
+	sendOKResponse(w, r, nil)
 }
 
 // @Summary logout
@@ -129,6 +139,8 @@ func (h *UserHandler) delete(w http.ResponseWriter, r *http.Request) {
 // @Description logout
 // @Accept  json
 // @Produce  json
+// @Success 200
+// @Failure 500 {object} dto.Response
 // @Router /profile/logout [post]
 func logOut(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, sessionKey)
