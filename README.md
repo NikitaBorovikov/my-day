@@ -10,5 +10,6 @@ MyDay API is a RESTful API for day planning. You can use it to add, edit and del
   - Implemented registration and authentication using <a href = https://github.com/gorilla/sessions>gorilla/sessions</a>.
   - Writing SQL queries using <a href = https://github.com/jmoiron/sqlx>sqlx</a>.
   - API documentation using <a href = https://github.com/go-swagger/go-swagger>swagger</a>.
+  - Working with Dockerfile and docker-compose 
 
   
