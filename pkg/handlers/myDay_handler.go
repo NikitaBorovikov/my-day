@@ -23,15 +23,6 @@ func (h *MyDayHandler) registerRouters(r chi.Router) {
 	r.Get("/{date}", h.get)
 }
 
-// @Summary Get MyDay Info
-// @Security sessionKey
-// @Tags myDay
-// @Description get myDay info
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} model.MyDay
-// @Failure 400,401,403,422 {object} dto.ErrorResponse
-// @Router /myDay/{date} [get]
 func (h *MyDayHandler) get(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
 	if !ok {

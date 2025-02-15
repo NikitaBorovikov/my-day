@@ -34,16 +34,6 @@ func (h *EventHandler) registerRouters(r chi.Router) {
 
 }
 
-// @Summary Create New Event
-// @Security sessionKey
-// @Tags events
-// @Description create new event
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} model.Event
-// @Failure 400,401,403,422 {object} dto.ErrorResponse
-// @Param input body dto.CreateEventRequest true "event info"
-// @Router /event/ [post]
 func (h *EventHandler) create(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
 	if !ok {
@@ -72,15 +62,6 @@ func (h *EventHandler) create(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, event)
 }
 
-// @Summary Get All Events
-// @Security sessionKey
-// @Tags events
-// @Description get all events
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} []model.Event
-// @Failure 400,401,403 {object} dto.ErrorResponse
-// @Router /event/ [get]
 func (h *EventHandler) getAll(w http.ResponseWriter, r *http.Request) {
 	userID, ok := getUserID(r.Context())
 	if !ok {
@@ -97,15 +78,6 @@ func (h *EventHandler) getAll(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, events)
 }
 
-// @Summary Get Event By ID
-// @Security sessionKey
-// @Tags events
-// @Description get event by ID
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} model.Event
-// @Failure 400,403 {object} dto.ErrorResponse
-// @Router /event/{eventID} [get]
 func (h *EventHandler) getByID(w http.ResponseWriter, r *http.Request) {
 	eventID, err := getEventIDFromURL(r)
 	if err != nil {
@@ -122,16 +94,6 @@ func (h *EventHandler) getByID(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, event)
 }
 
-// @Summary Update Event
-// @Security sessionKey
-// @Tags events
-// @Description update event
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} model.Event
-// @Failure 400,403,422 {object} dto.ErrorResponse
-// @Param input body dto.UpdateEventRequest true "event info"
-// @Router /event/{eventID} [put]
 func (h *EventHandler) update(w http.ResponseWriter, r *http.Request) {
 	eventID, err := getEventIDFromURL(r)
 	if err != nil {
@@ -161,15 +123,6 @@ func (h *EventHandler) update(w http.ResponseWriter, r *http.Request) {
 	sendOKResponse(w, r, event)
 }
 
-// @Summary Delete Event
-// @Security sessionKey
-// @Tags events
-// @Description delete event
-// @Accept  json
-// @Produce  json
-// @Success 200
-// @Failure 400,403 {object} dto.ErrorResponse
-// @Router /event/{eventID} [delete]
 func (h *EventHandler) delete(w http.ResponseWriter, r *http.Request) {
 	eventID, err := getEventIDFromURL(r)
 	if err != nil {
