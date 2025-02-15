@@ -20,7 +20,7 @@ import (
 // @version 1.0
 // @description REST API for planning your day
 
-// @host localhost:2323
+// @host localhost:8080
 // @BasePath /
 
 // @securityDefinitions.apikey sessionKey

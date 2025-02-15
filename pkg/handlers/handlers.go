@@ -57,7 +57,7 @@ func (h *Handlers) InitRouters() *chi.Mux {
 
 	//swagger
 	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:2323/swagger/doc.json"),
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
 	))
 
 	return r
