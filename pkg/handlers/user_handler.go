@@ -47,6 +47,7 @@ func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
 		sendResponseWithError(w, r, http.StatusUnprocessableEntity, err)
 		return
 	}
+	user.Password = ""
 	sendOKResponse(w, r, user)
 }
 
