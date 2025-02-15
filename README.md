@@ -51,6 +51,8 @@ Run the application:
 ```
 make run
 ```
+## Testing app
+To test the application, you can use <b>Postman</b> or using swagger (go to http://localhost:8080/swagger/index.html after the server is started).
 
 
 
