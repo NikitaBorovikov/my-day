@@ -15,13 +15,13 @@ MyDay API is a RESTful API for day planning. You can use it to add, edit and del
 Before you begin, ensure you have the following installed on your machine:
   - Go(version 1.23 or higher)
   - Docker
-## Installation
-1. **Clone the repository**
+## Installation 
+### 1. Clone the repository
 ```
 git clone https://github.com/NikitaBorovikov/my-day.git
 cd my-day
 ```
-2. **Set up environment variables**
+### 2. Set up environment variables
 Create a ```.env``` file in the root of the project:
 ```
 cp .env.example .env
@@ -36,12 +36,13 @@ PG_NAME=your_db_name
 SESSION_KEY=your_session_key
 ```
 Replace ```your_user```, ```your_password```, ```your_db_name```, ```your_session_key``` with your actual values.
-3. **Run db migration**
+
+### 3. Run db migration
 If the application is being launched for the first time, migrations must be applied to the database:
 ```
 make migrate
 ```
-4. **Build and run the application:**
+### 4. Build and run the application:
 Build the docker image:
 ```
 make docker-image 
