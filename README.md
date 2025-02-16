@@ -1,6 +1,7 @@
 # REST API for planning your day
 ## Description
 MyDay API is a RESTful API for day planning. You can use it to add, edit and delete tasks and events. The API supports standart HTTP methods and returns data in JSON format. 
+PORT: ```8080```
 ## Technologies and frameworks
   - API in accordance with REST principles.
   - The structure of the application in accordance with the principles of the <b>Clean Architecture</b>.
