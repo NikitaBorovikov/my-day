@@ -37,10 +37,7 @@ func (h *Handlers) InitRouters() *chi.Mux {
 	r.Post("/login", h.userHandler.signIn)
 
 	r.Route("/profile", func(r chi.Router) {
-		r.Use(AuthMiddleware)
-		r.Get("/", h.userHandler.get)
-		r.Delete("/", h.userHandler.delete)
-		r.Post("/logout", logOut)
+		h.userHandler.registerRouters(r)
 	})
 
 	r.Route("/task", func(r chi.Router) {

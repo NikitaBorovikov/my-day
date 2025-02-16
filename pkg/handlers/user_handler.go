@@ -6,6 +6,7 @@ import (
 	"toDoApp/pkg/model"
 	"toDoApp/pkg/usecases"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/gorilla/sessions"
 )
@@ -18,6 +19,13 @@ func NewUserHandler(userUseCase *usecases.UserUseCase) *UserHandler {
 	return &UserHandler{
 		UserUseCase: userUseCase,
 	}
+}
+
+func (h *UserHandler) registerRouters(r chi.Router) {
+	r.Use(AuthMiddleware)
+	r.Get("/", h.get)
+	r.Delete("/", h.delete)
+	r.Post("/logout", logOut)
 }
 
 func (h *UserHandler) signUp(w http.ResponseWriter, r *http.Request) {
