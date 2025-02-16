@@ -1,9 +1,5 @@
 package dto
 
-type Response struct {
-	Data interface{} `json:"data"`
-}
-
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
