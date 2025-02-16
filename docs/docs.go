@@ -143,6 +143,15 @@ const docTemplate = `{
                     "events"
                 ],
                 "summary": "Get Event By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID события",
+                        "name": "eventID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -182,6 +191,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update Event",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID события",
+                        "name": "eventID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "event info",
                         "name": "input",
@@ -236,6 +252,15 @@ const docTemplate = `{
                     "events"
                 ],
                 "summary": "Delete Event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID события",
+                        "name": "eventID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -331,6 +356,15 @@ const docTemplate = `{
                     "myDay"
                 ],
                 "summary": "Get MyDay Info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Дата в формате мм-дд-гггг",
+                        "name": "date",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -654,6 +688,15 @@ const docTemplate = `{
                     "tasks"
                 ],
                 "summary": "Get Task By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID задачи",
+                        "name": "taskID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -693,6 +736,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update Task",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID задачи",
+                        "name": "taskID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "task info",
                         "name": "input",
@@ -747,6 +797,15 @@ const docTemplate = `{
                     "tasks"
                 ],
                 "summary": "Delete Task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID задачи",
+                        "name": "taskID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"

@@ -213,6 +213,12 @@ paths:
       consumes:
       - application/json
       description: delete event
+      parameters:
+      - description: ID события
+        in: path
+        name: eventID
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -235,6 +241,12 @@ paths:
       consumes:
       - application/json
       description: get event by ID
+      parameters:
+      - description: ID события
+        in: path
+        name: eventID
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -260,6 +272,11 @@ paths:
       - application/json
       description: update event
       parameters:
+      - description: ID события
+        in: path
+        name: eventID
+        required: true
+        type: string
       - description: event info
         in: body
         name: input
@@ -333,6 +350,12 @@ paths:
       consumes:
       - application/json
       description: get myDay info
+      parameters:
+      - description: Дата в формате мм-дд-гггг
+        in: path
+        name: date
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -542,6 +565,12 @@ paths:
       consumes:
       - application/json
       description: delete task
+      parameters:
+      - description: ID задачи
+        in: path
+        name: taskID
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -564,6 +593,12 @@ paths:
       consumes:
       - application/json
       description: get task by ID
+      parameters:
+      - description: ID задачи
+        in: path
+        name: taskID
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -589,6 +624,11 @@ paths:
       - application/json
       description: update task
       parameters:
+      - description: ID задачи
+        in: path
+        name: taskID
+        required: true
+        type: string
       - description: task info
         in: body
         name: input
